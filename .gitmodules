@@ -1,0 +1,8 @@
+[submodule "libgdf"]
+	path = libgdf
+	url = https://github.com/abc99lr/libgdf.git
+	ignore = dirty
+[submodule "thrust"]
+	path = thrust
+	url = https://github.com/thrust/thrust.git
+	ignore = dirty
