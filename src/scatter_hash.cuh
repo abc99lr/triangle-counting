@@ -14,9 +14,10 @@ __global__ void scatter_with_hash_map(int num_edges, int num_nodes, int *input_r
         #pragma unroll
         for (int i = input_csr_row[internal]; i < input_csr_row[internal + 1]; i++) {
             int col = input_col_ind[i]; 
-            long long index = row << 32 + col; 
+            // long long index = row << 32 + col; 
             // int entry = index / SIZE_OF_INT; 
             // int offset = index % SIZE_OF_INT; 
+            int index = row * num_nodes + col;
 
             // if ((bit_map[entry] >> offset) & 1 == 1) {
             auto found = hash_map->find(index);
@@ -86,8 +87,9 @@ __global__ void build_hash_map(map_type *hash_map, int *input_row_ind, int *inpu
     int tx = threadIdx.x + blockIdx.x * blockDim.x;
 
     while (tx < num_edges) {
-        long long index = input_row_ind[tx] << 32 + input_col_ind[tx]; 
-        hash_map->insert(thrust::make_pair(index, 1), max_op<long long>());
+        // long long index = input_row_ind[tx] << 32 + input_col_ind[tx]; 
+        int index = input_row_ind[tx] * num_nodes + input_col_ind[tx]; 
+        hash_map->insert(thrust::make_pair(index, 1), max_op<int>());
         tx += blockDim.x * gridDim.x;
     }
 }

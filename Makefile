@@ -16,8 +16,11 @@ set_intersect : set_intersect.cu
 set_multi : set_intersect_multi.cu
 	nvcc -Ithrust -I. --std=c++11 set_intersect_multi.cu -o set_multi
 
+hash_multi : scatter_hash_multi.cu
+	nvcc -Ithrust -I. -Ilibgdf --std=c++11 scatter_hash_multi.cu -o hash_multi
+
 spgemm : spgemm.cu
 	nvcc -Ithrust -Icudf/cpp/src/ -Icudf/cpp/include/ -Icudf/cpp/thirdparty/rmm/include/ -I. --std=c++11 spgemm.cu -o spgemm
 
 clean:
-	rm -rf spgemm set_intersect scatter_map scatter_hash gather_reduce gather_atomic set_multi
+	rm -rf spgemm set_intersect scatter_map scatter_hash gather_reduce gather_atomic set_multi hash_multi

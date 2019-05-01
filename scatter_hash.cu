@@ -38,19 +38,23 @@ int main(void) {
     // int num_edges = 4156;
 
     // 133321
-    char file[] = "./data/Theory-16-25-81-B1k.tsv";
-    int num_nodes = 36244;
-    int num_edges = 137164;
+    // char file[] = "./data/Theory-16-25-81-B1k.tsv";
+    // int num_nodes = 36244;
+    // int num_edges = 137164;
 
     // // 2102761
-    // char file[] = "./data/Theory-25-81-256-B1k.tsv";
-    // int num_nodes = 547924;
-    // int num_edges = 2132284;
+    char file[] = "./data/Theory-25-81-256-B1k.tsv";
+    int num_nodes = 547924;
+    int num_edges = 2132284;
     
     // 66758995
     // char file[] = "./data/Theory-5-9-16-25-81-B1k.tsv";
     // int num_nodes = 2174640;
     // int num_edges = 28667380;
+
+    // printf("unsigned int: %d\n", sizeof(unsigned int)); 
+    // printf("unsigned long: %d\n", sizeof(unsigned long)); 
+    // printf("unsigned long long: %d\n", sizeof(unsigned long long)); 
 
     input_row_ind_h = (int*) malloc(num_edges * sizeof(int));
     input_col_ind_h = (int*) malloc(num_edges * sizeof(int));
