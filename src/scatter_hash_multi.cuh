@@ -1,21 +1,21 @@
 #define BLOCK_SIZE 256
 // #define SIZE_OF_INT 32
 
-using map_type = concurrent_unordered_map<int, int, std::numeric_limits<int>::max(), default_hash<int>, 
-                                        equal_to<int>, legacy_allocator<thrust::pair<int, int>>>;
-using op_type = max_op<int>; 
+using map_type = concurrent_unordered_map<long, int, std::numeric_limits<long>::max(), default_hash<long>, 
+                                        equal_to<long>, legacy_allocator<thrust::pair<long, int>>>;
+using op_type = max_op<long>; 
 
 __global__ void scatter_with_hash_map(int num_edges, int num_nodes, int *input_row_ind, int *input_col_ind, int *input_csr_row, map_type *hash_map, int *total_triangle, int start_idx) {
     int tx = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (tx < num_edges) {
-        int row = input_row_ind[tx];
+        long row = input_row_ind[tx];
         int internal = input_col_ind[tx + start_idx];
         #pragma unroll
         for (int i = input_csr_row[internal]; i < input_csr_row[internal + 1]; i++) {
-            int col = input_col_ind[i]; 
 
-            int index = row * num_nodes + col;
+            long col = input_col_ind[i]; 
+            long index = (row << 32) | col;
 
             auto found = hash_map->find(index);
             if (hash_map->end() != found) {
@@ -84,8 +84,10 @@ __global__ void build_hash_map(map_type *hash_map, int *input_row_ind, int *inpu
 
     while (tx < num_edges) {
         // long long index = input_row_ind[tx] << 32 + input_col_ind[tx]; 
-        int index = input_row_ind[tx] * num_nodes + input_col_ind[tx + start_idx]; 
-        hash_map->insert(thrust::make_pair(index, 1), max_op<int>());
+        long row = input_row_ind[tx];
+		long col = input_col_ind[tx + start_idx]; 
+		long index = (row << 32) | col ;  
+        hash_map->insert(thrust::make_pair(index, 1), max_op<long>());
         tx += blockDim.x * gridDim.x;
     }
 }
